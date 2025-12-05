@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المُيَسِّر البحثي الشامل</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            direction: rtl;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .progress-bar {
+            background: #f0f0f0;
+            height: 8px;
+            margin: 0;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .step {
+            display: none;
+        }
+
+        .step.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-title {
+            font-size: 1.8em;
+            color: #667eea;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        textarea.large {
+            min-height: 200px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-add {
+            background: #28a745;
+            color: white;
+            margin-top: 10px;
+        }
+
+        .btn-add:hover {
+            background: #218838;
+        }
+
+        .btn-remove {
+            background: #dc3545;
+            color: white;
+            padding: 8px 15px;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        .btn-remove:hover {
+            background: #c82333;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: space-between;
+        }
+
+        .dynamic-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-right: 4px solid #667eea;
+        }
+
+        .preview-page {
+            display: none;
+        }
+
+        .preview-page.active {
+            display: block;
+        }
+
+        .cover-page {
+            text-align: center;
+            padding: 100px 50px;
+        }
+
+        .cover-title {
+            font-size: 2.5em;
+            margin: 50px 0;
+            color: #333;
+        }
+
+        .cover-info {
+            font-size: 1.3em;
+            margin: 20px 0;
+            color: #555;
+        }
+
+        .table-of-contents {
+            padding: 40px;
+        }
+
+        .toc-title {
+            font-size: 2em;
+            text-align: center;
+            margin-bottom: 40px;
+            color: #667eea;
+        }
+
+        .toc-item {
+            padding: 10px 0;
+            border-bottom: 1px dotted #ddd;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .chapter-content {
+            padding: 40px;
+            line-height: 2;
+        }
+
+        .chapter-title {
+            font-size: 2em;
+            color: #667eea;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            color: #764ba2;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        .section-content {
+            text-align: justify;
+            margin-bottom: 20px;
+            line-height: 2;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+                max-width: 100%;
+            }
+
+            .header,
+            .progress-bar,
+            .button-group,
+            .btn,
+            .no-print {
+                display: none !important;
+            }
+
+            .content {
+                padding: 0;
+            }
+
+            .cover-page {
+                page-break-after: always;
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .chapter {
+                page-break-before: always;
+            }
+
+            .print-content {
+                font-family: 'Traditional Arabic', 'Arabic Typesetting', serif;
+                font-size: 14pt;
+                line-height: 2;
+            }
+
+            .table-of-contents {
+                page-break-after: always;
+            }
+        }
+
+        .print-only {
+            display: none;
+        }
+
+        @media print {
+            .print-only {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header no-print">
+            <h1>المُيَسِّر البحثي الشامل</h1>
+            <p>أداة احترافية لبناء بحث علمي متكامل خطوة بخطوة</p>
+        </div>
+
+        <div class="progress-bar no-print">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div class="content">
+            <div class="step active" data-step="0">
+                <h2 class="step-title">صفحة الغلاف</h2>
+                <div class="form-group">
+                    <label>عنوان البحث:</label>
+                    <input type="text" id="researchTitle" placeholder="أدخل عنوان البحث">
+                </div>
+                <div class="form-group">
+                    <label>اسم الطالب/الباحث:</label>
+                    <input type="text" id="studentName" placeholder="أدخل اسم الطالب">
+                </div>
+                <div class="form-group">
+                    <label>اسم المشرف:</label>
+                    <input type="text" id="supervisorName" placeholder="أدخل اسم المشرف">
+                </div>
+                <div class="form-group">
+                    <label>السنة الدراسية:</label>
+                    <input type="text" id="academicYear" placeholder="مثال: 1446هـ / 2025م">
+                </div>
+                <div class="button-group">
+                    <div></div>
+                    <button class="btn btn-primary" onclick="nextStep()">التالي</button>
+                </div>
+            </div>
+
+            <div class="step" data-step="1">
+                <h2 class="step-title">التقديم والشكر</h2>
+                <div class="form-group">
+                    <label>صفحة الشكر والتقدير:</label>
+                    <textarea id="acknowledgment" class="large" placeholder="اكتب كلمة شكر وتقدير للمساهمين في هذا البحث..."></textarea>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="prevStep()">السابق</button>
+                    <button class="btn btn-primary" onclick="nextStep()">التالي</button>
+                </div>
+            </div>
+
+            <div class="step" data-step="2">
+                <h2 class="step-title">الفصل الأول: خطة البحث</h2>
+                <div class="form-group">
+                    <label>المقدمة:</label>
+                    <textarea id="introduction" class="large" placeholder="اكتب مقدمة البحث..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>مشكلة الدراسة وتساؤلاتها:</label>
+                    <textarea id="problem" class="large" placeholder="حدد مشكلة الدراسة والتساؤلات البحثية..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>أهمية الدراسة:</label>
+                    <textarea id="importance" placeholder="اذكر أهمية هذه الدراسة..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>أهداف الدراسة:</label>
+                    <textarea id="objectives" placeholder="حدد أهداف الدراسة..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>حدود الدراسة:</label>
+                    <textarea id="limitations" placeholder="حدد الحدود الزمانية والمكانية والموضوعية..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>إجراءات الدراسة:</label>
+                    <textarea id="procedures" placeholder="اشرح إجراءات تنفيذ الدراسة..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>المصطلحات:</label>
+                    <textarea id="terminology" placeholder="عرّف المصطلحات الأساسية المستخدمة في البحث..."></textarea>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="prevStep()">السابق</button>
+                    <button class="btn btn-primary" onclick="nextStep()">التالي</button>
+                </div>
+            </div>
+
+            <div class="step" data-step="3">
+                <h2 class="step-title">الفصل الثاني: الإطار النظري</h2>
+                <div id="theoreticalAxes"></div>
+                <button class="btn btn-add" onclick="addAxis()">+ إضافة محور/مبحث</button>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="prevStep()">السابق</button>
+                    <button class="btn btn-primary" onclick="nextStep()">التالي</button>
+                </div>
+            </div>
+
+            <div class="step" data-step="4">
+                <h2 class="step-title">الفصل الثالث: الدراسات السابقة</h2>
+                <div id="previousStudies"></div>
+                <button class="btn btn-add" onclick="addStudy()">+ إضافة دراسة سابقة</button>
+                <div class="form-group" style="margin-top: 30px;">
+                    <label>التعقيب على الدراسات السابقة:</label>
+                    <textarea id="studiesComment" class="large" placeholder="اكتب تعقيباً على الدراسات السابقة..."></textarea>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="prevStep()">السابق</button>
+                    <button class="btn btn-primary" onclick="nextStep()">التالي</button>
+                </div>
+            </div>
+
+            <div class="step" data-step="5">
+                <h2 class="step-title">الفصل الرابع: المنهجية والإجراءات</h2>
+                <div class="form-group">
+                    <label>منهج الدراسة:</label>
+                    <textarea id="methodology" placeholder="حدد المنهج المستخدم في الدراسة..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>مجتمع الدراسة:</label>
+                    <textarea id="population" placeholder="صف مجتمع الدراسة..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>عينة الدراسة وطرق اختيارها:</label>
+                    <textarea id="sample" placeholder="حدد العينة وطريقة اختيارها..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>أداة الدراسة وطرق بنائها:</label>
+                    <textarea id="instrument" placeholder="اشرح أداة الدراسة وكيفية بنائها..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>صدق الأداة:</label>
+                    <textarea id="validity" placeholder="اذكر إجراءات التحقق من صدق الأداة..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>ثبات الأداة:</label>
+                    <textarea id="reliability" placeholder="اذكر إجراءات التحقق من ثبات الأداة..."></textarea>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="prevStep()">السابق</button>
+                    <button class="btn btn-primary" onclick="nextStep()">التالي</button>
+                </div>
+            </div>
+
+            <div class="step" data-step="6">
+                <h2 class="step-title">الفصل الخامس: النتائج والمناقشة</h2>
+                <div class="form-group">
+                    <label>استعراض النتائج:</label>
+                    <textarea id="resultsPresentation" class="large" placeholder="اعرض نتائج الدراسة..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>تفسير النتائج:</label>
+                    <textarea id="resultsInterpretation" class="large" placeholder="فسّر النتائج التي توصلت إليها..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>مناقشة الأسئلة/الفرضيات في ضوء النتائج:</label>
+                    <textarea id="resultsDiscussion" class="large" placeholder="ناقش الأسئلة والفرضيات..."></textarea>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="prevStep()">السابق</button>
+                    <button class="btn btn-primary" onclick="nextStep()">التالي</button>
+                </div>
+            </div>
+
+            <div class="step" data-step="7">
+                <h2 class="step-title">الفصل السادس: الخاتمة والتوصيات</h2>
+                <div class="form-group">
+                    <label>خلاصة الدراسة:</label>
+                    <textarea id="studySummary" class="large" placeholder="اكتب خلاصة شاملة للدراسة..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>خلاصة النتائج:</label>
+                    <textarea id="resultsSummary" placeholder="لخص أهم النتائج..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>دراسات وبحوث مقترحة:</label>
+                    <textarea id="futureResearch" placeholder="اقترح دراسات وبحوث مستقبلية..."></textarea>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="prevStep()">السابق</button>
+                    <button class="btn btn-primary" onclick="nextStep()">التالي</button>
+                </div>
+            </div>
+
+            <div class="step" data-step="8">
+                <h2 class="step-title">المراجع</h2>
+                <h3 style="color: #667eea; margin-bottom: 20px;">المراجع العربية</h3>
+                <div id="arabicReferences"></div>
+                <button class="btn btn-add" onclick="addReference('arabic')">+ إضافة مرجع عربي</button>
+                
+                <h3 style="color: #667eea; margin: 40px 0 20px 0;">المراجع الأجنبية</h3>
+                <div id="foreignReferences"></div>
+                <button class="btn btn-add" onclick="addReference('foreign')">+ إضافة مرجع أجنبي</button>
+                
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="prevStep()">السابق</button>
+                    <button class="btn btn-primary" onclick="generatePreview()">معاينة البحث</button>
+                </div>
+            </div>
+
+            <div class="preview-page" id="previewPage">
+                <div class="no-print" style="text-align: center; margin-bottom: 30px;">
+                    <h2 style="color: #667eea; margin-bottom: 20px;">معاينة البحث</h2>
+                    <button class="btn btn-primary" onclick="window.print()">طباعة البحث</button>
+                    <button class="btn btn-secondary" onclick="backToEdit()">العودة للتعديل</button>
+                </div>
+                <div id="previewContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 0;
+        const totalSteps = 9;
+        let axisCount = 0;
+        let studyCount = 0;
+        let arabicRefCount = 0;
+        let foreignRefCount = 0;
+
+        function updateProgress() {
+            const progress = (currentStep / totalSteps) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function showStep(step) {
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            document.querySelector(`[data-step="${step}"]`).classList.add('active');
+            currentStep = step;
+            updateProgress();
+            window.scrollTo(0, 0);
+        }
+
+        function nextStep() {
+            if (currentStep < totalSteps - 1) {
+                showStep(currentStep + 1);
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 0) {
+                showStep(currentStep - 1);
+            }
+        }
+
+        function addAxis() {
+            axisCount++;
+            const container = document.getElementById('theoreticalAxes');
+            const div = document.createElement('div');
+            div.className = 'dynamic-item';
+            div.innerHTML = `
+                <div class="form-group">
+                    <label>عنوان المحور ${axisCount}:</label>
+                    <input type="text" id="axisTitle${axisCount}" placeholder="أدخل عنوان المحور">
+                </div>
+                <div class="form-group">
+                    <label>محتوى المحور:</label>
+                    <textarea id="axisContent${axisCount}" class="large" placeholder="اكتب محتوى المحور..."></textarea>
+                </div>
+                <button class="btn btn-remove" onclick="this.parentElement.remove()">حذف المحور</button>
+            `;
+            container.appendChild(div);
+        }
+
+        function addStudy() {
+            studyCount++;
+            const container = document.getElementById('previousStudies');
+            const div = document.createElement('div');
+            div.className = 'dynamic-item';
+            div.innerHTML = `
+                <div class="form-group">
+                    <label>اسم الباحث:</label>
+                    <input type="text" id="studyAuthor${studyCount}" placeholder="أدخل اسم الباحث">
+                </div>
+                <div class="form-group">
+                    <label>عنوان الدراسة:</label>
+                    <input type="text" id="studyTitle${studyCount}" placeholder="أدخل عنوان الدراسة">
+                </div>
+                <div class="form-group">
+                    <label>ملخص الدراسة:</label>
+                    <textarea id="studySummary${studyCount}" placeholder="اكتب ملخصاً للدراسة..."></textarea>
+                </div>
+                <button class="btn btn-remove" onclick="this.parentElement.remove()">حذف الدراسة</button>
+            `;
+            container.appendChild(div);
+        }
+
+        function addReference(type) {
+            const container = type === 'arabic' ? document.getElementById('arabicReferences') : document.getElementById('foreignReferences');
+            const count = type === 'arabic' ? ++arabicRefCount : ++foreignRefCount;
+            const div = document.createElement('div');
+            div.className = 'dynamic-item';
+            div.innerHTML = `
+                <div class="form-group">
+                    <label>المرجع ${count}:</label>
+                    <textarea id="${type}Ref${count}" placeholder="اكتب المرجع بالتنسيق الأكاديمي المطلوب..."></textarea>
+                </div>
+                <button class="btn btn-remove" onclick="this.parentElement.remove()">حذف المرجع</button>
+            `;
+            container.appendChild(div);
+        }
+
+        function getValue(id) {
+            const element = document.getElementById(id);
+            return element ? element.value.replace(/\n/g, '<br>') : '';
+        }
+
+        function generateSection(title, id) {
+            const value = getValue(id);
+            return value ? `
+                <h3 class="section-title">${title}</h3>
+                <div class="section-content">${value}</div>
+            ` : '';
+        }
+
+        function generatePreview() {
+            const content = document.getElementById('previewContent');
+            let html = '';
+
+            html += `
+                <div class="cover-page print-only">
+                    <h1 class="cover-title">${getValue('researchTitle')}</h1>
+                    <div class="cover-info">إعداد: ${getValue('studentName')}</div>
+                    <div class="cover-info">إشراف: ${getValue('supervisorName')}</div>
+                    <div class="cover-info">${getValue('academicYear')}</div>
+                </div>
+            `;
+
+            html += `
+                <div class="table-of-contents print-only">
+                    <h2 class="toc-title">فهرس المحتويات</h2>
+                    <div class="toc-item"><span>صفحة الشكر والتقدير</span><span>1</span></div>
+                    <div class="toc-item"><span>الفصل الأول: خطة البحث</span><span>2</span></div>
+                    <div class="toc-item"><span>الفصل الثاني: الإطار النظري</span><span>3</span></div>
+                    <div class="toc-item"><span>الفصل الثالث: الدراسات السابقة</span><span>4</span></div>
+                    <div class="toc-item"><span>الفصل الرابع: المنهجية والإجراءات</span><span>5</span></div>
+                    <div class="toc-item"><span>الفصل الخامس: النتائج والمناقشة</span><span>6</span></div>
+                    <div class="toc-item"><span>الفصل السادس: الخاتمة والتوصيات</span><span>7</span></div>
+                    <div class="toc-item"><span>المراجع</span><span>8</span></div>
+                </div>
+            `;
+
+            if (getValue('acknowledgment')) {
+                html += `
+                    <div class="chapter">
+                        <div class="chapter-content">
+                            <h2 class="chapter-title">الشكر والتقدير</h2>
+                            <div class="section-content">${getValue('acknowledgment')}</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            html += `
+                <div class="chapter">
+                    <div class="chapter-content">
+                        <h2 class="chapter-title">الفصل الأول: خطة البحث</h2>
+                        ${generateSection('المقدمة', 'introduction')}
+                        ${generateSection('مشكلة الدراسة وتساؤلاتها', 'problem')}
+                        ${generateSection('أهمية الدراسة', 'importance')}
+                        ${generateSection('أهداف الدراسة', 'objectives')}
+                        ${generateSection('حدود الدراسة', 'limitations')}
+                        ${generateSection('إجراءات الدراسة', 'procedures')}
+                        ${generateSection('المصطلحات', 'terminology')}
+                    </div>
+                </div>
+            `;
+
+            let chapter2Content = '';
+            for (let i = 1; i <= axisCount; i++) {
+                const title = getValue(`axisTitle${i}`);
+                const content = getValue(`axisContent${i}`);
+                if (title || content) {
+                    chapter2Content += `
+                        <h3 class="section-title">${title || 'محور ' + i}</h3>
+                        <div class="section-content">${content}</div>
+                    `;
+                }
+            }
+            if (chapter2Content) {
+                html += `
+                    <div class="chapter">
+                        <div class="chapter-content">
+                            <h2 class="chapter-title">الفصل الثاني: الإطار النظري</h2>
+                            ${chapter2Content}
+                        </div>
+                    </div>
+                `;
+            }
+
+            let chapter3Content = '';
+            for (let i = 1; i <= studyCount; i++) {
+                const author = getValue(`studyAuthor${i}`);
+                const title = getValue(`studyTitle${i}`);
+                const summary = getValue(`studySummary${i}`);
+                if (author || title || summary) {
+                    chapter3Content += `
+                        <div style="margin-bottom: 30px;">
+                            <h3 class="section-title">دراسة ${author}</h3>
+                            <div class="section-content"><strong>العنوان:</strong> ${title}</div>
+                            <div class="section-content">${summary}</div>
+                        </div>
+                    `;
+                }
+            }
+            const studiesComment = getValue('studiesComment');
+            if (chapter3Content || studiesComment) {
+                html += `
+                    <div class="chapter">
+                        <div class="chapter-content">
+                            <h2 class="chapter-title">الفصل الثالث: الدراسات السابقة</h2>
+                            ${chapter3Content}
+                            ${studiesComment ? `<h3 class="section-title">التعقيب على الدراسات السابقة</h3><div class="section-content">${studiesComment}</div>` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+
+            html += `
+                <div class="chapter">
+                    <div class="chapter-content">
+                        <h2 class="chapter-title">الفصل الرابع: المنهجية والإجراءات</h2>
+                        ${generateSection('منهج الدراسة', 'methodology')}
+                        ${generateSection('مجتمع الدراسة', 'population')}
+                        ${generateSection('عينة الدراسة وطرق اختيارها', 'sample')}
+                        ${generateSection('أداة الدراسة وطرق بنائها', 'instrument')}
+                        ${generateSection('صدق الأداة', 'validity')}
+                        ${generateSection('ثبات الأداة', 'reliability')}
+                    </div>
+                </div>
+            `;
+
+            html += `
+                <div class="chapter">
+                    <div class="chapter-content">
+                        <h2 class="chapter-title">الفصل الخامس: النتائج والمناقشة</h2>
+                        ${generateSection('استعراض النتائج', 'resultsPresentation')}
+                        ${generateSection('تفسير النتائج', 'resultsInterpretation')}
+                        ${generateSection('مناقشة الأسئلة والفرضيات', 'resultsDiscussion')}
+                    </div>
+                </div>
+            `;
+
+            html += `
+                <div class="chapter">
+                    <div class="chapter-content">
+                        <h2 class="chapter-title">الفصل السادس: الخاتمة والتوصيات</h2>
+                        ${generateSection('خلاصة الدراسة', 'studySummary')}
+                        ${generateSection('خلاصة النتائج', 'resultsSummary')}
+                        ${generateSection('دراسات وبحوث مقترحة', 'futureResearch')}
+                    </div>
+                </div>
+            `;
+
+            let referencesContent = '<h3 class="section-title">المراجع العربية</h3>';
+            for (let i = 1; i <= arabicRefCount; i++) {
+                const ref = getValue(`arabicRef${i}`);
+                if (ref) {
+                    referencesContent += `<div class="section-content">${i}. ${ref}</div>`;
+                }
+            }
+            referencesContent += '<h3 class="section-title" style="margin-top: 40px;">المراجع الأجنبية</h3>';
+            for (let i = 1; i <= foreignRefCount; i++) {
+                const ref = getValue(`foreignRef${i}`);
+                if (ref) {
+                    referencesContent += `<div class="section-content">${i}. ${ref}</div>`;
+                }
+            }
+            html += `
+                <div class="chapter">
+                    <div class="chapter-content">
+                        <h2 class="chapter-title">المراجع</h2>
+                        ${referencesContent}
+                    </div>
+                </div>
+            `;
+
+            content.innerHTML = html;
+            document.querySelectorAll('.step').forEach(s => s.style.display = 'none');
+            document.getElementById('previewPage').classList.add('active');
+        }
+
+        function backToEdit() {
+            document.getElementById('previewPage').classList.remove('active');
+            document.querySelectorAll('.step').forEach(s => s.style.display = 'block');
+            showStep(currentStep);
+        }
+
+        updateProgress();
+    </script>
+</body>
+</html>
